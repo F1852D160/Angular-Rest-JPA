@@ -12,9 +12,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Size;
 
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import cl.clarochile.intranet.util.JsonDateDeserializer;
 import cl.clarochile.intranet.util.JsonDateSerializer;
@@ -60,7 +62,9 @@ public class User implements Serializable {
         this.id = id;
     }
     
-    @Column(name="nombre", length=50)
+    @Column(name="nombre", length=50, nullable=false)
+    @NotEmpty
+    @Size(min=2)
     public String getName() {
     	return name;
     }
@@ -69,7 +73,9 @@ public class User implements Serializable {
     	this.name = name;
     }
     
-    @Column(name="ap_paterno", length=100)
+    @Column(name="ap_paterno", length=100, nullable=false)
+    @NotEmpty
+    @Size(min=2)
     public String getLastname() {
     	return lastname;
     }
@@ -79,6 +85,8 @@ public class User implements Serializable {
     }
     
     @Column(name="ap_materno", length=100)
+    @NotEmpty
+    @Size(min=2)
     public String getMotherLastname() {
     	return motherLastname;
     }
@@ -87,7 +95,8 @@ public class User implements Serializable {
     	this.motherLastname = motherLastname;
     }
     
-    @Column(name="fecha_nac")
+    @Column(name="fecha_nac", nullable=false)
+    @NotEmpty
     @Temporal(TemporalType.DATE)
     @JsonSerialize(using = JsonDateSerializer.class)
     @JsonDeserialize(using = JsonDateDeserializer.class)
@@ -99,7 +108,9 @@ public class User implements Serializable {
     	this.birthDate = birthDate;
     }
 
-    @Column(length=100)
+    @Column(length=100, nullable=false)
+    @NotEmpty
+    @Size(min=8)
 	public String getEmail() {
 		return email;
 	}
@@ -108,7 +119,9 @@ public class User implements Serializable {
 		this.email = email;
 	}
 
-	@Column(name="telefono", length=20)
+	@Column(name="telefono", length=20, nullable=false)
+	@NotEmpty
+	@Size(min=6)
 	public String getPhone() {
 		return phone;
 	}
