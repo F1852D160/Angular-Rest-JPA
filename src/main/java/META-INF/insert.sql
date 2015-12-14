@@ -1,0 +1,5 @@
+INSERT INTO usuario(usuario_id, nombre, ap_paterno, ap_materno, fecha_nac, email, telefono) VALUES(1, 'Roberto', 'Vidal', 'González', '1985-09-28', 'robert.vidalg@outlook.com', '925781509');
+INSERT INTO usuario(usuario_id, nombre, ap_paterno, ap_materno, fecha_nac, email, telefono) VALUES(2, 'Santiago', 'Sánchez', 'Baca', '1992-11-06', 'santisbaca@gmail.com', '975385941');
+INSERT INTO usuario(usuario_id, nombre, ap_paterno, ap_materno, fecha_nac, email, telefono) VALUES(3, 'Peter', 'García', 'López', '1990-05-22', 'petergarcial@hotmail.com', '998367812');
+INSERT INTO usuario(usuario_id, nombre, ap_paterno, ap_materno, fecha_nac, email, telefono) VALUES(4, 'Manuel', 'Arisméndiz', 'Vela', '1988-03-10', 'manuel_avela@yahoo.com', '946803852');
+INSERT INTO usuario(usuario_id, nombre, ap_paterno, ap_materno, fecha_nac, email, telefono) VALUES(5, 'Daniel', 'Lynch', 'Palacio', '1985-06-19', 'danie.lynch.p@terra.com', '998784251');

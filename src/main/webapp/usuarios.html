@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html ng-app="users">
+<head>
+	<meta charset="UTF-8">
+	<title>Intranet Claro - Usuarios</title>
+	<!-- Latest compiled and minified CSS -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet" />
+    <link rel="stylesheet"
+    	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="resources/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="resources/css/bootstrap-datepicker.min.css" />
+	<link rel="stylesheet" href="resources/css/app/style.css" />
+</head>
+<body ng-controller="usersCtrl">
+	<section class="container">
+		<div class="jumbotron" id="header">
+			<div class="techs">
+				<img src="http://i.imgur.com/mM0hiWe.png?1" alt="Java" />
+				<img src="resources/img/angular.png" alt="Angular" />
+			</div>
+			<h1>REST + JPA + Angular</h1>
+			<p>
+				Realiza un crud fácilmente para una API REST con Angular.
+			</p>
+			<a href="https://github.com/migamipe/JEE7HTML5" class="btn btn-primary" target="_blank">
+				<i class="fa fa-code"></i>
+				Ver código
+			</a>
+		</div>
+		<section class="toolbar">
+			<div>
+				<button data-toggle="modal" data-target="#new" class="btn btn-primary">
+					<i class="fa fa-plus"></i>
+					Nuevo
+				</button>
+				<button data-toggle="modal" data-target="#inactives" class="btn btn-danger">
+					<i class="fa fa-trash-o"></i>
+					Inactivos
+				</button>
+			</div>
+			<input type="text" placeholder="Buscar un usuario..." id="search" class="form-control"/>
+		</section>
+		<section class="table-wrapper">
+			<table id="tblUsers" class="table table-bordered">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Nombre</th>
+						<th>Ap. Paterno</th>
+						<th>Ap. Materno</th>
+						<th>Fecha Nac.</th>
+						<th>Email</th>
+						<th>Teléfono</th>
+						<th>Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="user in users">
+						<td>{{$index + 1}}</td>
+						<td>{{user.name}}</td>
+						<td>{{user.lastname}}</td>
+						<td>{{user.motherLastname}}</td>
+						<td>{{user.birthDate}}</td>
+						<td>{{user.email}}</td>
+						<td>{{user.phone}}</td>
+						<td>
+							<div>
+							<a title="ver detalles" ng-click="seeUser(user)">
+								<i class="material-icons">visibility</i>
+							</a>
+							<a title="editar" ng-click="editUser(user)">
+								<i class="material-icons">create</i>
+							</a>
+							<a title="eliminar" ng-click="deleteUser(user)">
+								<i class="material-icons">delete</i>
+							</a>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+		
+		<!-- Modal nuevo -->
+		<div id="new" class="modal fade success" role="dialog">
+		    <div class="modal-dialog" style="width: 400px">
+		        <div class="modal-content">
+		            <form ng-submit="doNew()">
+		                <!-- cabecera -->
+		                <div class="modal-header">
+		                    <button type="button" class="close" 
+		                            data-dismiss="modal" aria-label="Close">
+		                        <span aria-hidden="true">&times;</span>
+		                    </button>
+		                    <h4 class="modal-title" id="myModalLabel">Nuevo usuario</h4>
+		                </div>
+		                <!-- cuerpo -->
+		                <div class="body" style="padding: 12px">
+		                	<!-- tabs -->
+		                	<ul class="nav nav-tabs">
+							  <li class="active"><a data-toggle="tab" href="#new-home">Inicio</a></li>
+							  <li><a data-toggle="tab" href="#new-second">Siguiente</a></li>
+							</ul>
+							<div class="tab-content">
+								<!-- primera tab -->
+								<div id="new-home" class="tab-pane fade in active">
+									<div class="form-group">
+				                        <label for="name">Nombre</label>       
+				                        <div class="input-group">
+				                        	<span class="input-group-addon">
+						                        <span class="glyphicon glyphicon-user"></span>
+						                    </span>
+						                    <input type="text" id="name" name="name" 
+				                        		ng-model="toCreate.name" class="form-control" 
+				                        		ng-pattern="validations.letters" required/>
+				                        </div>
+				                    </div>
+				                    <div class="form-group">
+				                        <label for="lastname">Ap. Paterno</label>
+				                        <div class="input-group">
+				                        	<span class="input-group-addon">
+				                        		<span class="glyphicon glyphicon-user"></span>
+				                        	</span>
+				                        	<input type="text" id="lastname" name="lastname" 
+				                        	ng-model="toCreate.lastname" ng-pattern="validations.letters"
+				                        	class="form-control"required />
+				                        </div>
+				                    </div>
+				                    <div class="form-group">
+				                        <label for="motherLastname">Ap. Materno</label>
+				                        <div class="input-group">
+				                        	<span class="input-group-addon">
+				                        		<span class="glyphicon glyphicon-user"></span>
+				                        	</span>
+					                        <input type="text" id="motherLastname" 
+					                        	class="form-control"
+					                        	ng-model="toCreate.motherLastname" 
+					                        	ng-pattern="validations.letters" name="motherLastname" 
+					                        	required />
+					                    </div>
+				                    </div>
+								</div>
+								<!-- segunda tab -->
+								<div id="new-second" class="tab-pane fade">
+									<div class="form-group">
+				                        <label for="birthDate">Fecha Nac</label>
+				                        <div class="input-group date">
+				                        	<span class="input-group-addon">
+				                        		<span class="glyphicon glyphicon-calendar"></span>
+				                        	</span>
+					                        <input type="text" id="birthDate" class="form-control"
+					                        	ng-model="toCreate.birthDate" name="birthDate" 
+					                        	required />
+					                    </div>
+				                    </div>
+				                    <div class="form-group">
+				                        <label for="email">Email</label>
+				                        <div class="input-group">
+				                        	<span class="input-group-addon">
+				                        		<span class="glyphicon glyphicon-envelope"></span>
+				                        	</span>
+					                        <input type="email" id="email" class="form-control"
+					                        	ng-model="toCreate.email" name="email" required />
+					                    </div>
+				                    </div>
+				                    <div class="form-group">
+				                        <label for="phone">Teléfono</label>
+				                        <div class="input-group">
+				                        	<span class="input-group-addon">
+				                        		<span class="glyphicon glyphicon-phone"></span>
+				                        	</span>
+					                        <input type="text" id="phone" class="form-control"
+					                        	ng-model="toCreate.phone" name="phone" 
+					                        	ng-pattern="validations.phone" required />
+					                    </div>
+				                    </div>
+								</div>
+							</div>
+		                </div>
+		                <!-- pie -->
+		                <div class="modal-footer">
+		                    <button type="button" class="btn btn-default" ng-click="reset()">Cancelar</button>
+		                    <button type="submit" class="btn btn-success">
+		                    	<i class="fa fa-check"></i>
+		                    	Registrar
+		                    </button>
+		                </div>
+		            </form>
+		        </div>
+		    </div>
+		</div>
+		
+		<!-- Modal detalles -->
+		<div id="details" class="modal fade primary" role="dialog">
+		    <div class="modal-dialog" style="width: 400px">
+		        <div class="modal-content">
+		            <!--<form ng-submit="doNew()">-->
+		                <!-- cabecera -->
+		                <div class="modal-header">
+		                    <button type="button" class="close" 
+		                            data-dismiss="modal" aria-label="Close">
+		                        <span aria-hidden="true">&times;</span>
+		                    </button>
+		                    <h4 class="modal-title" id="myModalLabel">Detalles de usuario</h4>
+		                </div>
+		                <!-- cuerpo -->
+		                <div class="body" style="padding: 12px">
+		                	<!-- tabs -->
+		                	<ul class="nav nav-tabs">
+							  <li class="active"><a data-toggle="tab" href="#see-home">Inicio</a></li>
+							  <li><a data-toggle="tab" href="#see-second">Siguiente</a></li>
+							</ul>
+							<div class="tab-content">
+								<!-- primera tab -->
+								<div id="see-home" class="tab-pane fade in active">
+									<div class="form-group">
+				                        <label for="name">Nombre</label>
+				                        <div class="input-group">
+				                        	<span class="input-group-addon">
+				                        		<span class="glyphicon glyphicon-user"></span>
+				                        	</span>
+					                        <input type="text" id="name" name="name" 
+					                        	ng-model="selected.name" class="form-control" 
+					                        	 readonly/>
+					                    </div>
+				                    </div>
+				                    <div class="form-group">
+				                        <label for="lastname">Ap. Paterno</label>
+				                        <div class="input-group">
+				                        	<span class="input-group-addon">
+				                        		<span class="glyphicon glyphicon-user"></span>
+				                        	</span>
+					                        <input type="text" id="lastname" name="lastname" 
+					                        	ng-model="selected.lastname" 
+					                        	class="form-control" readonly/>
+					                    </div>
+				                    </div>
+				                    <div class="form-group">
+				                        <label for="motherLastname">Ap. Materno</label>
+				                        <div class="input-group">
+				                        	<span class="input-group-addon">
+				                        		<span class="glyphicon glyphicon-user"></span>
+				                        	</span>
+					                        <input type="text" id="motherLastname" 
+					                        	class="form-control"
+					                        	ng-model="selected.motherLastname" 
+					                        	name="motherLastname" readonly/>
+					                    </div>
+				                    </div>
+								</div>
+								<!-- segunda tab -->
+								<div id="see-second" class="tab-pane fade">
+									<div class="form-group">
+				                        <label for="birthDate">Fecha Nac</label>
+				                        <div class="input-group date">
+				                        	<span class="input-group-addon">
+				                        		<span class="glyphicon glyphicon-calendar"></span>
+				                        	</span>
+					                        <input type="text" id="birthDate" class="form-control"
+					                        	ng-model="selected.birthDate" name="birthDate" 
+					                        	readonly />
+					                    </div>
+				                    </div>
+				                    <div class="form-group">
+				                        <label for="email">Email</label>
+				                        <div class="input-group">
+				                        	<span class="input-group-addon">
+				                        		<span class="glyphicon glyphicon-envelope"></span>
+				                        	</span>
+					                        <input type="email" id="email" class="form-control"
+					                        	ng-model="selected.email" name="email" readonly />
+					                    </div>
+				                    </div>
+				                    <div class="form-group">
+				                        <label for="phone">Teléfono</label>
+				                        <div class="input-group">
+				                        	<span class="input-group-addon">
+				                        		<span class="glyphicon glyphicon-phone"></span>
+				                        	</span>
+					                        <input type="text" id="phone" class="form-control"
+					                        	ng-model="selected.phone" name="phone" 
+					                        	ng-pattern="validations.phone" readonly />
+					                    </div>
+				                    </div>
+								</div>
+							</div>
+		                </div>
+		                <!-- pie -->
+		                <div class="modal-footer">
+		                    <button type="button" data-dismiss="modal" class="btn btn-primary">
+		                    	<i class="fa fa-check"></i>
+		                    	Aceptar
+		                    </button>
+		                </div>
+		            <!-- </form> -->
+		        </div>
+		    </div>
+		</div>
+
+		<!-- Modal editar -->
+		<div id="edit" class="modal fade primary" role="dialog">
+		    <div class="modal-dialog" style="width: 400px">
+		        <div class="modal-content">
+		            <form ng-submit="doEdit()">
+		                <!-- cabecera -->
+		                <div class="modal-header">
+		                    <button type="button" class="close" 
+		                            data-dismiss="modal" aria-label="Close">
+		                        <span aria-hidden="true">&times;</span>
+		                    </button>
+		                    <h4 class="modal-title" id="myModalLabel">Editar usuario</h4>
+		                </div>
+		                <!-- cuerpo -->
+		                <div class="body" style="padding: 12px">
+		                	<!-- tabs -->
+		                	<ul class="nav nav-tabs">
+							  <li class="active">
+							  	<a data-toggle="tab" href="#edit-home">Inicio</a></li>
+							  <li><a data-toggle="tab" href="#edit-second">Siguiente</a></li>
+							</ul>
+							<div class="tab-content">
+								<!-- primera tab -->
+								<div id="edit-home" class="tab-pane fade in active">
+									<div class="form-group">
+				                        <label for="name">Nombre</label>
+				                        <div class="input-group">
+				                        	<span class="input-group-addon">
+				                        		<span class="glyphicon glyphicon-user"></span>
+				                        	</span>
+					                        <input type="text" id="name" name="name" 
+					                        	ng-model="toUpdate.name" class="form-control" 
+					                        	ng-pattern="validations.letters" required/>
+					                     </div>
+				                    </div>
+				                    <div class="form-group">
+				                        <label for="lastname">Ap. Paterno</label>
+				                        <div class="input-group">
+				                        	<span class="input-group-addon">
+				                        		<span class="glyphicon glyphicon-user"></span>
+				                        	</span>
+					                        <input type="text" id="lastname" name="lastname" 
+					                        	ng-model="toUpdate.lastname" class="form-control"
+					                        	ng-pattern="validations.letters" required />
+					                    </div>
+				                    </div>
+				                    <div class="form-group">
+				                        <label for="motherLastname">Ap. Materno</label>
+				                        <div class="input-group">
+				                        	<span class="input-group-addon">
+				                        		<span class="glyphicon glyphicon-user"></span>
+				                        	</span>
+					                        <input type="text" id="motherLastname" class="form-control"
+					                        	ng-model="toUpdate.motherLastname" name="motherLastname" 
+					                        	ng-pattern="validations.letters" required />
+					                    </div>
+				                    </div>
+								</div>
+								<!-- segunda tab -->
+								<div id="edit-second" class="tab-pane fade in">
+									<div class="form-group">
+				                        <label for="birthDate">Fecha Nac</label>
+				                        <div class="input-group date">
+				                        	<span class="input-group-addon">
+				                        		<span class="glyphicon glyphicon-calendar"></span>
+				                        	</span>
+					                        <input type="text" id="birthDate" class="form-control"
+					                        	ng-bind="date | date:'MM/dd/yyyy'" 
+					                        	ng-model="toUpdate.birthDate" required />
+					                    </div>
+				                    </div>
+				                    <div class="form-group">
+				                        <label for="email">Email</label>
+				                        <div class="input-group">
+				                        	<span class="input-group-addon">
+				                        		<span class="glyphicon glyphicon-envelope"></span>
+				                        	</span>
+					                        <input type="email" id="email" class="form-control"
+					                        	ng-model="toUpdate.email" name="email" required />
+					                    </div>
+				                    </div>
+				                    <div class="form-group">
+				                        <label for="phone">Teléfono</label>
+				                        <div class="input-group">
+				                        	<span class="input-group-addon">
+				                        		<span class="glyphicon glyphicon-phone"></span>
+				                        	</span>
+					                        <input type="text" id="phone" class="form-control"
+					                        	ng-model="toUpdate.phone" name="phone" 
+					                        	ng-pattern="validations.phone" required />
+					                    </div>
+				                    </div>
+								</div>
+							</div>
+		                </div>
+		                <!-- pie -->
+		                <div class="modal-footer">
+		                    <button type="button" class="btn btn-default" 
+		                                data-dismiss="modal">Cancelar</button>
+		                    <button type="submit" class="btn btn-primary">
+		                    	<i class="fa fa-hdd-o"></i>
+		                    	Guardar
+		                    </button>
+		                </div>
+		            </form>
+		        </div>
+		    </div>
+		</div>
+	</section>
+	
+	<!-- Modal eliminar -->
+		<div id="delete" class="modal fade danger" role="dialog">
+		    <div class="modal-dialog" style="width: 400px">
+		        <div class="modal-content">
+		            <form ng-submit="doDelete()">
+		                <!-- cabecera -->
+		                <div class="modal-header">
+		                    <button type="button" class="close" 
+		                            data-dismiss="modal" aria-label="Close">
+		                        <span aria-hidden="true">&times;</span>
+		                    </button>
+		                    <h4 class="modal-title" id="myModalLabel">Eliminar usuario</h4>
+		                </div>
+		                <!-- cuerpo -->
+		                <div class="body" style="padding: 12px">
+		                	<h2 style="color: #555; font-size: 16px; text-align:center">
+		                        ¿Está seguro de eliminar este usuario?
+		                    </h2>
+		                    <span style="display: block; font-style: italic; font-size: 13px; 
+		                    	text-align: center; margin-top: 15px; width: 100%">
+		                    	El usuario seguirá existiendo. Pulse 'Inactivos' 
+		                    	para ver las usuarios inactivos
+                    		</span>
+		                </div>
+		                <!-- pie -->
+		                <div class="modal-footer">
+		                    <button type="button" class="btn btn-default" 
+		                                data-dismiss="modal">Cancelar</button>
+		                    <button type="submit" class="btn btn-danger">
+		                    	<i class="fa fa-times"></i>
+		                    	Eliminar
+		                    </button>
+		                </div>
+		            </form>
+		        </div>
+		    </div>
+		</div>
+	</section>
+	
+	<!-- librerías -->
+	<script src="resources/js/jquery.min.js"></script>
+	<script src="resources/js/angular.min.js"></script>
+	<script src="resources/js/bootstrap.min.js"></script>
+	<script src="resources/js/moment-with-locales.min.js"></script>
+	<script src="resources/js/bootstrap-datetimepicker.min.js"></script>
+	<!-- scripts -->
+	<script src="resources/js/app/app.js"></script>
+	<script>
+		$('.date').datepicker({
+			format: 'dd-mm-yyyy',
+			locale: 'es'
+		});
+	</script>
+</body>
+</html>
